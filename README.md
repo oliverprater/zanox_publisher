@@ -1,6 +1,12 @@
 # ZanoxRuby
 
-TODO: Write a gem description
+This is a ruby wrapper for the [ZANOX Publisher API](https://developer.zanox.com/web/guest/publisher-api-2011), released on March 1, 2011.
+
+## Features
+
+* [Full documentation](http://www.rubydoc.info/github/oliverprater/zanox_ruby/master)
+* Full API Endpoint coverage
+* OAuth and other authorization flows
 
 ## Installation
 
