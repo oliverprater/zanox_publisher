@@ -2,6 +2,7 @@ require 'zanox_ruby/version'
 
 module ZanoxRuby
   autoload :Connection, 'zanox_ruby/connection'
+  autoload :Profile,    'zanox_ruby/profile'
 
   class << self
     attr_accessor :connect_id, :secret_key

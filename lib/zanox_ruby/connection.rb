@@ -3,6 +3,8 @@ require 'base64'
 require 'openssl'
 
 module ZanoxRuby
+  class AuthenticationError < StandardError; end
+
   class Connection
     include HTTParty
 
@@ -11,6 +13,8 @@ module ZanoxRuby
     API_VERSION = '2011-03-01'
 
     base_uri "#{API_URI}/#{DATA_FORMAT}/#{API_VERSION}"
+
+    attr_accessor :relative_path
 
     # Initializes a new connection instance of ZanoxRuby.
     # It requires authentication information to access the Publisher API.
@@ -175,6 +179,8 @@ module ZanoxRuby
     #
     # For details access the guide found {https://developer.zanox.com/web/guest/authentication/zanox-oauth/oauth-rest here}.
     def public_auth(params)
+      raise AuthenticationError, 'Please provide your connect ID.' if @connect_id.nil?
+
       auth = { 'Authorization' => "ZXWS #{@connect_id}" }
 
       if params.has_key? :headers
@@ -197,6 +203,9 @@ module ZanoxRuby
     # Timestamp - in GMT, format "EEE, dd MMM yyyy HH:mm:ss";
     # Nonce - unique random string, generated at the time of request, valid once, 20 or more characters
     def private_auth(verb, relative_path, params)
+      raise AuthenticationError, 'Please provide your connect ID.' if @connect_id.nil?
+      raise AuthenticationError, 'Please provide your secret key.' if @secret_key.nil?
+
       # API Method: GET Sales for the date 2013-07-20
       # 1. Generate nonce and timestamp
       timestamp = Time.new.gmtime.strftime('%a, %e %b %Y %T GMT').to_s

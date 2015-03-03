@@ -9,7 +9,7 @@ describe ZanoxRuby do
 
   context "::authenticate" do
     it "should set connect ID and secret" do
-      ZanoxRuby.authenticate(credentials['connect_id'], credentials['secret_key'])
+      ZanoxRuby::authenticate(credentials['connect_id'], credentials['secret_key'])
       expect(ZanoxRuby::connect_id).to eql credentials['connect_id']
       expect(ZanoxRuby::secret_key).to eql credentials['secret_key']
     end
