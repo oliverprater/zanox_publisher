@@ -49,4 +49,20 @@ describe ZanoxRuby::Connection do
       expect{connection.signature_get}.to raise_error(ZanoxRuby::AuthenticationError)
     end
   end
+
+  describe 'Unauthorized' do
+    before(:all) { ZanoxRuby::authenticate(credentials['connect_id'], 'INVALID') }
+    after(:all) { ZanoxRuby::authenticate(nil, nil) }
+    subject(:connection) { ZanoxRuby::Connection.new() }
+
+    it { expect{ connection.signature_get('/profiles') }.to raise_error(ZanoxRuby::Unauthorized) }
+  end
+
+  describe 'NotFound' do
+    before(:all) { ZanoxRuby::authenticate(credentials['connect_id'], credentials['secret_key']) }
+    after(:all) { ZanoxRuby::authenticate(nil, nil) }
+    subject(:connection) { ZanoxRuby::Connection.new() }
+
+    it { expect{ connection.get('/no_where') }.to raise_error(ZanoxRuby::NotFound) }
+  end
 end

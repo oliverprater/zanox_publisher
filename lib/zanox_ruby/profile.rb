@@ -27,6 +27,9 @@ module ZanoxRuby
       # Get all profiles associated to the connect ID.
       #
       # This is equivalent to the Zanox API method getProfiles.
+      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-profiles}.
+      #
+      # Authentication: Requires signature.
       #
       # @return [Array<Profile>]
       #
@@ -35,11 +38,11 @@ module ZanoxRuby
       #           profile  = profiles.first #=> #<Profile ...>
       def all
         response = self.connection.signature_get()
-        data = response.parsed_response.fetch('profileItem')
+        data = response.fetch('profileItem')
         profiles = []
 
         data.each do |profile|
-          profiles << self.new(profile)
+          profiles << Profile.new(profile)
         end
 
         profiles
@@ -59,51 +62,50 @@ module ZanoxRuby
         Profile.all.first
       end
 
-      # The connection instance with relative_path for Profile
+      # A connection instance with Profiles' relative_path
       #
       # @return [Connection]
       def connection
-        @connection ||= ZanoxRuby::Connection.new(RESOURCE_PATH)
+        @connection ||= Connection.new(RESOURCE_PATH)
       end
     end
 
     # Profile information
     #
-    # Resource Information
-    # Rate Limited?     No
-    # Authentication    Requires signature.
-    # Response Formats  json, xml
-    # HTTP Methods      GET, PUT
-    # Resource family   Profile
-    # Response Object   profileItem
-    # API Version       2011-03-01
+    # Get and update your profile information
     #
-    # GET {https://developer.zanox.com/web/guest/publisher-api-2011/get-profiles}
-    # PUT {https://developer.zanox.com/web/guest/publisher-api-2011/put-profiles}
+    # TODO: PUT {https://developer.zanox.com/web/guest/publisher-api-2011/put-profiles}
     #
     def initialize(data = {})
-      @id = data.fetch('@id').to_i
-      @adrank = data.fetch('adrank')
-      @firstName = data.fetch('firstName')
-      @lastName = data.fetch('lastName')
-      @email = data.fetch('email')
-      @country = data.fetch('country')
-      @street1 = data.fetch('street1')
-      @city = data.fetch('city')
-      @zipcode = data.fetch('zipcode')
-      @loginName = data.fetch('loginName')
-      @userName = data.fetch('userName')
+      @id           = data.fetch('@id').to_i
+      @adrank       = data.fetch('adrank')
+      @firstName    = data.fetch('firstName')
+      @lastName     = data.fetch('lastName')
+      @email        = data.fetch('email')
+      @country      = data.fetch('country')
+      @street1      = data.fetch('street1')
+      @city         = data.fetch('city')
+      @zipcode      = data.fetch('zipcode')
+      @loginName    = data.fetch('loginName')
+      @userName     = data.fetch('userName')
       @isAdvertiser = data.fetch('isAdvertiser')
-      @isSublogin = data.fetch('isSublogin')
-      # Optional returned data
-      @title = data.fetch('title', nil)
-      @currency = data.fetch('currency', nil)
-      @language = data.fetch('language', nil)
-      @fax = data.fetch('fax', nil)
-      @mobile = data.fetch('mobile', nil)
-      @phone = data.fetch('phone', nil)
-      @street2 = data.fetch('street2', nil)
-      @company = data.fetch('company', nil)
+      @isSublogin   = data.fetch('isSublogin')
+      # Optionally returned data
+      @title        = data.fetch('title', nil)
+      @currency     = data.fetch('currency', nil)
+      @language     = data.fetch('language', nil)
+      @fax          = data.fetch('fax', nil)
+      @mobile       = data.fetch('mobile', nil)
+      @phone        = data.fetch('phone', nil)
+      @street2      = data.fetch('street2', nil)
+      @company      = data.fetch('company', nil)
+    end
+
+    # Returns the profileItems' ID as integer representation
+    #
+    # @return [Integer]
+    def to_i
+      @id
     end
 
     attr_accessor :id, :adrank, :first_name, :last_name, :email, :country, :street1, :city,

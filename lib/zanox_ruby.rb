@@ -1,8 +1,15 @@
 require 'zanox_ruby/version'
 
 module ZanoxRuby
-  autoload :Connection, 'zanox_ruby/connection'
-  autoload :Profile,    'zanox_ruby/profile'
+  autoload :Connection,         'zanox_ruby/connection'
+  autoload :Base,               'zanox_ruby/base'
+  autoload :Category,           'zanox_ruby/category'
+  autoload :Format,             'zanox_ruby/format'
+  autoload :TrackingLink,       'zanox_ruby/tracking_link'
+  autoload :Profile,            'zanox_ruby/profile'
+  autoload :AdSpace,            'zanox_ruby/ad_space'
+  autoload :AdMedium,           'zanox_ruby/ad_medium'
+  autoload :Program,            'zanox_ruby/program'
 
   class << self
     attr_accessor :connect_id, :secret_key
