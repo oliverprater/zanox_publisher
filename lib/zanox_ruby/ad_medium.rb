@@ -171,11 +171,6 @@ module ZanoxRuby
     #
     # Get banners and links, including tracking links
     #
-    # TODO: Format with class
-    #
-    # TODO: {https://developer.zanox.com/web/guest/publisher-api-2011/get-admedia}
-    # TODO: {https://developer.zanox.com/web/guest/publisher-api-2011/get-admedia-admedium}
-    #
     def initialize(data = {})
       @id             = data.fetch('@id').to_i
       @name           = data.fetch('name')

@@ -169,12 +169,12 @@ describe ZanoxRuby::Program do
     end
   end
 
-  describe '#categories', vcr: { record: :new_episodes } do
+  describe '#admedia_categories', vcr: { record: :new_episodes } do
     subject(:progam) { ZanoxRuby::Program.page.first }
 
-    it { is_expected.to respond_to :categories }
-    it { expect(progam.categories).to be_kind_of Array }
-    it { expect(progam.categories.count).to be > 0 }
-    it { expect(progam.categories.first).to be_kind_of ZanoxRuby::Category }
+    it { is_expected.to respond_to :admedia_categories }
+    it { expect(progam.admedia_categories).to be_kind_of Array }
+    it { expect(progam.admedia_categories.count).to be > 0 }
+    it { expect(progam.admedia_categories.first).to be_kind_of ZanoxRuby::Category }
   end
 end

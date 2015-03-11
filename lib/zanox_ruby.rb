@@ -10,6 +10,7 @@ module ZanoxRuby
   autoload :AdSpace,            'zanox_ruby/ad_space'
   autoload :AdMedium,           'zanox_ruby/ad_medium'
   autoload :Program,            'zanox_ruby/program'
+  autoload :Incentive,         'zanox_ruby/incentive'
 
   class << self
     attr_accessor :connect_id, :secret_key

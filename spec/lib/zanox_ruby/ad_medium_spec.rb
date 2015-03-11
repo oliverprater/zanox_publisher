@@ -5,7 +5,7 @@ describe ZanoxRuby::AdMedium do
   after(:all) { ZanoxRuby::authenticate(nil, nil) }
 
   let(:program) { ZanoxRuby::Program.page.first }
-  let(:category) { program.categories.first }
+  let(:category) { program.admedia_categories.first }
   let(:region) { 'DE' }
   let(:format) { 4 }
   let(:type) { ZanoxRuby::AdMedium.const_get(:ADMEDIA_TYPE_ENUM).first }

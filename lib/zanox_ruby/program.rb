@@ -166,15 +166,15 @@ module ZanoxRuby
     # This is equivalent to the Zanox API method GetAdmediumCategories.
     # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-admedia-categories-program}.
     #
-    # # UNSURE IF BOTH CATEGORY OBJECTS DESCRIBE SAME THING WHEN ID IS SAME ???
-    # NOTE: ONCE IT STATES admediaCategories AND OTHER JUST Category (FOR PROGRAM)
+    # NOTE: The returned ad media categories are different from progam categories
     #
     # Authentication: Requires connect ID.
     #
     # @return [<Category>]
-    def categories
-      # Maybe use AdMedium.connection if it exists
-      self.connection.get("/admedia/categories/program/#{@id}")
+    def admedia_categories
+      response = Program.connection.get("/admedia/categories/program/#{@id}")
+
+      Category.fetch(response['categories'])
     end
 
     # Programs
