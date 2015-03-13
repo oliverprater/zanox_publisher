@@ -38,7 +38,7 @@ module ZanoxRuby
 
     def initialize(data = {})
       @id   = data.fetch('@id').to_i
-      @name = data.fetch('$')
+      @name = data.fetch('$', nil)
     end
 
     def to_s
