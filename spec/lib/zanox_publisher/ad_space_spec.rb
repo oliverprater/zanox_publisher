@@ -1,40 +1,40 @@
 require 'spec_helper'
 
-describe ZanoxRuby::AdSpace do
-  before(:all) { ZanoxRuby::authenticate(credentials['connect_id'], credentials['secret_key']) }
-  after(:all) { ZanoxRuby::authenticate(nil, nil) }
+describe ZanoxPublisher::AdSpace do
+  before(:all) { ZanoxPublisher::authenticate(credentials['connect_id'], credentials['secret_key']) }
+  after(:all) { ZanoxPublisher::authenticate(nil, nil) }
 
   describe '::page', :vcr do
-    subject(:adspaces) { ZanoxRuby::AdSpace.page }
+    subject(:adspaces) { ZanoxPublisher::AdSpace.page }
 
     it { is_expected.to be_kind_of Array }
-    it { expect(adspaces.first).to be_kind_of ZanoxRuby::AdSpace }
+    it { expect(adspaces.first).to be_kind_of ZanoxPublisher::AdSpace }
 
     it { expect(adspaces.count).to be > 0 }
     it 'sets the AdSpace total count' do
-      ZanoxRuby::AdSpace.total = nil
+      ZanoxPublisher::AdSpace.total = nil
       adspaces
-      expect(ZanoxRuby::AdSpace.total).to be > 0
+      expect(ZanoxPublisher::AdSpace.total).to be > 0
     end
   end
 
   describe '::all', :vcr do
-    subject(:adspaces) { ZanoxRuby::AdSpace.all }
+    subject(:adspaces) { ZanoxPublisher::AdSpace.all }
 
     it { is_expected.to be_kind_of Array }
-    it { expect(adspaces.first).to be_kind_of ZanoxRuby::AdSpace }
+    it { expect(adspaces.first).to be_kind_of ZanoxPublisher::AdSpace }
 
-    it { expect(adspaces.count).to be == ZanoxRuby::AdSpace.total }
+    it { expect(adspaces.count).to be == ZanoxPublisher::AdSpace.total }
   end
 
   describe '::find', vcr: { record: :new_episodes } do
     let(:first) do
-      ZanoxRuby::AdSpace.all.first
+      ZanoxPublisher::AdSpace.all.first
     end
 
-    subject(:find) { ZanoxRuby::AdSpace.find(first.id) }
+    subject(:find) { ZanoxPublisher::AdSpace.find(first.id) }
 
-    it { is_expected.to be_kind_of ZanoxRuby::AdSpace }
+    it { is_expected.to be_kind_of ZanoxPublisher::AdSpace }
 
     it { expect(find.id).to be == first.id }
     it { expect(find.name).to be == first.name }
@@ -47,7 +47,7 @@ describe ZanoxRuby::AdSpace do
   end
 
   describe 'item', :vcr do
-    subject(:adspace) { ZanoxRuby::AdSpace.all.first }
+    subject(:adspace) { ZanoxPublisher::AdSpace.all.first }
 
     it 'responds to to_i with its ID' do
       expect(adspace.to_i).to be == adspace.id

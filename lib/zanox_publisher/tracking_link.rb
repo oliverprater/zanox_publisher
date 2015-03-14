@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   # @attr [Integer] adspace     The adspaces' ID for which the tracking link is set
   # @attr [String]  ppv         The Pay Per View tracking link
   # @attr [String]  ppc         The Pay Per Click tracking link

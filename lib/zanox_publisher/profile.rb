@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   # @attr [Integer] id              The profileItem's identifer from Zanox
   # @attr [Fixnum]  adrank          The adrank
   # @attr [String]  first_name      The first name of the profile holder
@@ -34,7 +34,7 @@ module ZanoxRuby
       # @return [Array<Profile>]
       #
       # @example
-      #           profiles = ZanoxRuby::Profile.all #=> [#<Profile ...>]
+      #           profiles = ZanoxPublisher::Profile.all #=> [#<Profile ...>]
       #           profile  = profiles.first #=> #<Profile ...>
       def all
         response = self.connection.signature_get()
@@ -57,7 +57,7 @@ module ZanoxRuby
       # @return [Profile]
       #
       # @example
-      #           my_profile = ZanoxRuby::Profile.first #=> #<Profile ...>
+      #           my_profile = ZanoxPublisher::Profile.first #=> #<Profile ...>
       def first
         Profile.all.first
       end

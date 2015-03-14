@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   # @attr [Integer]         id              The admediumItem's identifer from Zanox
   # @attr [String]          name            The name for the admedium
   # @attr [Fixnum]          adrank          The adrank of the admedium
@@ -27,7 +27,7 @@ module ZanoxRuby
       # Retrieves all affiliate link's dependent on search parameters.
       #
       # This can require multiple requests, as internally every page is pulled.
-      # The ZanoxRuby::AdMedium.page function can be used to better control the requests made.
+      # The ZanoxPublisher::AdMedium.page function can be used to better control the requests made.
       #
       # @param program [Integer] Limits results to a particular program ID.
       # @param region [String] Limits results to programs from a particular region.

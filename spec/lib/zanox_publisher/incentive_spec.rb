@@ -1,45 +1,45 @@
 require 'spec_helper'
 
-describe ZanoxRuby::Incentive do
-  before(:all) { ZanoxRuby::authenticate(credentials['connect_id'], credentials['secret_key']) }
-  after(:all) { ZanoxRuby::authenticate(nil, nil) }
+describe ZanoxPublisher::Incentive do
+  before(:all) { ZanoxPublisher::authenticate(credentials['connect_id'], credentials['secret_key']) }
+  after(:all) { ZanoxPublisher::authenticate(nil, nil) }
 
-  let(:program) { ZanoxRuby::Program.page.first }
-  let(:adspace) { ZanoxRuby::AdSpace.page.first }
-  let(:incentive_type) { ZanoxRuby::Incentive.const_get(:INCENTIVETYPEENUM ).first }
+  let(:program) { ZanoxPublisher::Program.page.first }
+  let(:adspace) { ZanoxPublisher::AdSpace.page.first }
+  let(:incentive_type) { ZanoxPublisher::Incentive.const_get(:INCENTIVETYPEENUM ).first }
   let(:region) { 'DE' }
   let(:incentives_total) do
-    ZanoxRuby::Incentive.page
-    ZanoxRuby::Incentive.total
+    ZanoxPublisher::Incentive.page
+    ZanoxPublisher::Incentive.total
   end
   let(:exclusive_incentives_total) do
-    ZanoxRuby::Incentive.page(0, true)
-    ZanoxRuby::Incentive.total
+    ZanoxPublisher::Incentive.page(0, true)
+    ZanoxPublisher::Incentive.total
   end
 
   describe '::page', :vcr do
     context 'with non-exclusive incentives' do
-      subject(:incentives) { ZanoxRuby::Incentive.page }
+      subject(:incentives) { ZanoxPublisher::Incentive.page }
 
       it { is_expected.to be_kind_of Array }
-      it { expect(incentives.first).to be_kind_of ZanoxRuby::Incentive }
+      it { expect(incentives.first).to be_kind_of ZanoxPublisher::Incentive }
 
       it { expect(incentives.count).to be > 0 }
       it 'to set the Incentive total count' do
-        ZanoxRuby::Incentive.total = nil
+        ZanoxPublisher::Incentive.total = nil
         incentives
-        expect(ZanoxRuby::Incentive.total).to be > 0
+        expect(ZanoxPublisher::Incentive.total).to be > 0
       end
       it { expect(incentives.all? { |incentive| incentive.exclusive == false}).to be true}
 
       context 'with progam' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, false, program: program) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, program: program) }
 
         it { expect(incentives.all? { |incentive| incentive.program.id == program.id }).to be true }
       end
 
       context 'with adspace' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, false, adspace: adspace) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, adspace: adspace) }
 
         it 'incentives have tracking link associated with this AdSpace' do
           admedia = incentives.map { |incentive| incentive.admedia }
@@ -48,25 +48,25 @@ describe ZanoxRuby::Incentive do
       end
 
       context 'with incentive_type' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, false, incentive_type: incentive_type ) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, incentive_type: incentive_type ) }
 
         it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
       end
 
       context 'with incentiveType' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, false, incentiveType: incentive_type ) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, incentiveType: incentive_type ) }
 
         it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
       end
 
       context 'with region' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, false, region: region) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, region: region) }
 
         it 'limits results to programs from a particular region' do
           programs = []
 
           incentives.each do |incentive|
-            program = ZanoxRuby::Program.find(incentive.program.id)
+            program = ZanoxPublisher::Program.find(incentive.program.id)
             programs << program
           end
 
@@ -76,27 +76,27 @@ describe ZanoxRuby::Incentive do
     end
 
     context 'with exclusive incentives' do
-      subject(:incentives) { ZanoxRuby::Incentive.page(0, true) }
+      subject(:incentives) { ZanoxPublisher::Incentive.page(0, true) }
 
       it { is_expected.to be_kind_of Array }
-      it { expect(incentives.first).to be_kind_of ZanoxRuby::Incentive }
+      it { expect(incentives.first).to be_kind_of ZanoxPublisher::Incentive }
 
       it { expect(incentives.count).to be > 0 }
       it 'to set the Incentive total count' do
-        ZanoxRuby::Incentive.total = nil
+        ZanoxPublisher::Incentive.total = nil
         incentives
-        expect(ZanoxRuby::Incentive.total).to be > 0
+        expect(ZanoxPublisher::Incentive.total).to be > 0
       end
       it { expect(incentives.all? { |incentive| incentive.exclusive == true}).to be true}
 
       context 'with progam' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, true, program: program) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, program: program) }
 
         it { expect(incentives.all? { |incentive| incentive.program.id == program.id }).to be true }
       end
 
       context 'with adspace' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, true, adspace: adspace) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, adspace: adspace) }
 
         it 'incentives have tracking link associated with this AdSpace' do
           admedia = incentives.map { |incentive| incentive.admedia }
@@ -105,25 +105,25 @@ describe ZanoxRuby::Incentive do
       end
 
       context 'with incentive_type' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, true, incentive_type: incentive_type ) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, incentive_type: incentive_type ) }
 
         it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
       end
 
       context 'with incentiveType' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, true, incentiveType: incentive_type ) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, incentiveType: incentive_type ) }
 
         it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
       end
 
       context 'with region' do
-        subject(:incentives) { ZanoxRuby::Incentive.page(0, true, region: region) }
+        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, region: region) }
 
         it 'limits results to programs from a particular region' do
           programs = []
 
           incentives.each do |incentive|
-            program = ZanoxRuby::Program.find(incentive.program.id)
+            program = ZanoxPublisher::Program.find(incentive.program.id)
             programs << program
           end
 
@@ -133,23 +133,23 @@ describe ZanoxRuby::Incentive do
     end
 
     describe '::all', :vcr do
-      subject(:incentives) { ZanoxRuby::Incentive.all region: region, incentive_type: incentive_type }
+      subject(:incentives) { ZanoxPublisher::Incentive.all region: region, incentive_type: incentive_type }
 
       it { is_expected.to be_kind_of Array }
-      it { expect(incentives.first).to be_kind_of ZanoxRuby::Incentive }
+      it { expect(incentives.first).to be_kind_of ZanoxPublisher::Incentive }
 
-      it { expect(incentives.count).to be == ZanoxRuby::Incentive.total }
+      it { expect(incentives.count).to be == ZanoxPublisher::Incentive.total }
     end
 
     describe '::find', vcr: { record: :new_episodes } do
       context 'with non-exclusive incentives' do
         let(:first) do
-          ZanoxRuby::Incentive.page(0, false, adspace: adspace).first
+          ZanoxPublisher::Incentive.page(0, false, adspace: adspace).first
         end
 
-        subject(:find) { ZanoxRuby::Incentive.find(first.id) }
+        subject(:find) { ZanoxPublisher::Incentive.find(first.id) }
 
-        it { is_expected.to be_kind_of ZanoxRuby::Incentive }
+        it { is_expected.to be_kind_of ZanoxPublisher::Incentive }
 
         it { expect(find.id).to be == first.id }
         it { expect(find.name).to be == first.name }
@@ -159,19 +159,19 @@ describe ZanoxRuby::Incentive do
 
         # Seems to be implementation error in Zanox API
         context 'with adspace' do
-          subject(:find) { ZanoxRuby::Incentive.find(first.id, false, adspace: adspace)}
+          subject(:find) { ZanoxPublisher::Incentive.find(first.id, false, adspace: adspace)}
 
           it { expect(find.admedia.tracking_links.first.adspace).to be == adspace.id }
         end
       end
       context 'with exclusive incentives' do
         let(:first) do
-          ZanoxRuby::Incentive.page(0, true, adspace: adspace).first
+          ZanoxPublisher::Incentive.page(0, true, adspace: adspace).first
         end
 
-        subject(:find) { ZanoxRuby::Incentive.find(first.id, true) }
+        subject(:find) { ZanoxPublisher::Incentive.find(first.id, true) }
 
-        it { is_expected.to be_kind_of ZanoxRuby::Incentive }
+        it { is_expected.to be_kind_of ZanoxPublisher::Incentive }
 
         it { expect(find.id).to be == first.id }
         it { expect(find.name).to be == first.name }
@@ -181,7 +181,7 @@ describe ZanoxRuby::Incentive do
 
         # Seems to be implementation error in Zanox API
         context 'with adspace' do
-          subject(:find) { ZanoxRuby::Incentive.find(first.id, true, adspace: adspace)}
+          subject(:find) { ZanoxPublisher::Incentive.find(first.id, true, adspace: adspace)}
 
           it { expect(find.admedia.tracking_links.first.adspace).to be == adspace.id }
         end

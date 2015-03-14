@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   # Legacy name for category of program and admedium
   #
   # NOTE: ENSURE THAT include? WORKS WHEN GETTING STRING TO USE AN ARRAY<CATEGORY> TO VALIDATE

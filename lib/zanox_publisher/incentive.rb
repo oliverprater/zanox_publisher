@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   # @attr [Integer]         id                    The admediumItem's identifer from Zanox
   # @attr [String]          name                  The
   # @attr [Program]         program               The
@@ -29,7 +29,7 @@ module ZanoxRuby
       # Retrieves all incentive's dependent on search parameters.
       #
       # This can require multiple requests, as internally every page is pulled.
-      # The ZanoxRuby::AdMedium.page function can be used to better control the requests made.
+      # The ZanoxPublisher::AdMedium.page function can be used to better control the requests made.
       #
       # @param exclusive [Boolean] limit results to non-exclusive or exclusive incentive.
       # @param program [Program, Integer] limits results to a particular program ID.

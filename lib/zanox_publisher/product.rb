@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   # @attr [String]              id                    The productItem's identifer from Zanox
   # @attr [String]              name                  The
   # @attr [DateTime]            modified              The
@@ -26,7 +26,7 @@ module ZanoxRuby
       # Retrieves all products dependent on search parameters.
       #
       # This can require multiple requests, as internally every page is pulled.
-      # The ZanoxRuby::Product.page function can be used to better control the requests made.
+      # The ZanoxPublisher::Product.page function can be used to better control the requests made.
       #
       # @param query [String] Limits results to programs associated with this search string (API equivalent is q).
       # @param q [String] Limits results to programs associated with this search string (API name).

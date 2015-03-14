@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   # @attr [Integer]         id              The profileItem's identifer from Zanox
   # @attr [String]          name            The name of your adspace
   # @attr [String]          url             The url of your adspace
@@ -21,7 +21,7 @@ module ZanoxRuby
       # Retrieves all adspace items related to the publisher account.
       #
       # This can require multiple requests, as internally every page is pulled.
-      # The ZanoxRuby::AdSpace.page function can be used to better control the requests made.
+      # The ZanoxPublisher::AdSpace.page function can be used to better control the requests made.
       #
       # @return [Array<AdSpace>]
       def all
@@ -48,13 +48,13 @@ module ZanoxRuby
       # @param items [Integer] number of items in the result set (API option name)
       #
       # @example
-      #         ZanoxRuby::AdSpace.page(1, per_page: 50) #=> [<AdSpace...>]
+      #         ZanoxPublisher::AdSpace.page(1, per_page: 50) #=> [<AdSpace...>]
       #
       # @example
-      #         ZanoxRuby::AdSpace.page(2) #=> [<AdSpace...>]
+      #         ZanoxPublisher::AdSpace.page(2) #=> [<AdSpace...>]
       #
       # @example
-      #         ZanoxRuby::AdSpace.page #=> [<AdSpace...>]
+      #         ZanoxPublisher::AdSpace.page #=> [<AdSpace...>]
       #
       # @return [Array<AdSpace>]
       def page(page = 0, options = {})

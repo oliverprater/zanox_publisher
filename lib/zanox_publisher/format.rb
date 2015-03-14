@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   class Format
     attr_reader :id, :name
 

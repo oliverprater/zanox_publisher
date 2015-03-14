@@ -1,15 +1,15 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'zanox_ruby/version'
+require 'zanox_publisher/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'zanox_ruby'
-  spec.version       = ZanoxRuby::VERSION
+  spec.name          = 'zanox_publisher'
+  spec.version       = ZanoxPublisher::VERSION
   spec.authors       = ['Oliver Prater']
   spec.email         = ['oliver.prater@gmail.com']
   spec.summary       = %q{A ruby wrapper for the ZANOX Publisher API.}
-  spec.homepage      = 'http://rubygems.org/gems/zanox_ruby'
+  spec.homepage      = 'http://rubygems.org/gems/zanox_publisher'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")

@@ -2,7 +2,7 @@ require 'httparty'
 require 'base64'
 require 'openssl'
 
-module ZanoxRuby
+module ZanoxPublisher
   # Represents a Zanox Product API error. Contains specific data about the error.
   class ZanoxError < StandardError
     attr_reader :data
@@ -41,16 +41,16 @@ module ZanoxRuby
 
     base_uri "#{API_URI}/#{DATA_FORMAT}/#{API_VERSION}"
 
-    USER_AGENT_STRING = "ZanoxRuby/#{VERSION} (ruby #{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}; #{RUBY_PLATFORM})"
+    USER_AGENT_STRING = "ZanoxPublisher/#{VERSION} (ruby #{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}; #{RUBY_PLATFORM})"
 
     attr_accessor :relative_path
 
-    # Initializes a new connection instance of ZanoxRuby.
+    # Initializes a new connection instance of ZanoxPublisher.
     # It requires authentication information to access the Publisher API.
     # The relative path is used as the default for HTTP method calls.
     #
     # The connect ID and secret key can be passed as parameters,
-    # else the ZanoxRuby::authenticate information is taken.
+    # else the ZanoxPublisher::authenticate information is taken.
     #
     #
     # @param relative_path [String] The default relative path of the resource
@@ -58,14 +58,14 @@ module ZanoxRuby
     # @param secret_key [String] The secret key of your account for authentication
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new("/profiles", "<your_client_id>", "<your_client_secret>") #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new("/profiles", "<your_client_id>", "<your_client_secret>") #=> #<Connection ...>
     #           connection.get #=> #<HTTParty::Response ...>
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.get('/profiles') #=> #<HTTParty::Response ...>
     #
-    def initialize(relative_path = '', connect_id = ZanoxRuby.connect_id, secret_key = ZanoxRuby.secret_key)
+    def initialize(relative_path = '', connect_id = ZanoxPublisher.connect_id, secret_key = ZanoxRuby.secret_key)
       @connect_id, @secret_key = connect_id, secret_key
       @relative_path = relative_path
       @connection = self.class
@@ -81,7 +81,7 @@ module ZanoxRuby
     # @return [Hash]
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.get('/path') #=> #<HTTParty::Response ...>
     def get(relative_path = @relative_path, params = {})
       handle_response connection.get(relative_path, public_auth(params))
@@ -97,7 +97,7 @@ module ZanoxRuby
     # @return [Hash]
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.post('/path') #=> #<HTTParty::Response ...>
     def post(relative_path = @relative_path, params = {})
       handle_response connection.post(relative_path, public_auth(params))
@@ -113,7 +113,7 @@ module ZanoxRuby
     # @return [Hash]
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.put('/path') #=> #<HTTParty::Response ...>
     def put(relative_path = @relative_path, params = {})
       handle_response connection.put(relative_path, public_auth(params))
@@ -129,7 +129,7 @@ module ZanoxRuby
     # @return [Hash]
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.delete('/path') #=> #<HTTParty::Response ...>
     def delete(relative_path = @relative_path, params = {})
       handle_response connection.delete(relative_path, public_auth(params))
@@ -145,7 +145,7 @@ module ZanoxRuby
     # @return [Hash]
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.signature_get('/path') #=> #<HTTParty::Response ...>
     def signature_get(relative_path = @relative_path, params = {})
       handle_response connection.get(relative_path, private_auth('GET', relative_path, params))
@@ -161,7 +161,7 @@ module ZanoxRuby
     # @return [Hash]
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.signature_post('/path') #=> #<HTTParty::Response ...>
     def signature_post(relative_path = @relative_path, params = {})
       handle_response connection.post(relative_path, private_auth('POST', relative_path, params))
@@ -177,7 +177,7 @@ module ZanoxRuby
     # @return [Hash]
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.signature_put('/path') #=> #<HTTParty::Response ...>
     def signature_put(relative_path = @relative_path, params = {})
       handle_response connection.put(relative_path, private_auth('PUT', relative_path, params))
@@ -193,7 +193,7 @@ module ZanoxRuby
     # @return [Hash]
     #
     # @example
-    #           connection = ZanoxRuby::Connection.new #=> #<Connection ...>
+    #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.signature_delete('/path') #=> #<HTTParty::Response ...>
     def signature_delete(relative_path = @relative_path, params = {})
       handle_response connection.delete(relative_path, private_auth('DELETE', relative_path, params))

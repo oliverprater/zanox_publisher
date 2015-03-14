@@ -1,4 +1,4 @@
-require 'zanox_ruby'
+require 'zanox_publisher'
 require 'support/vcr'
 require 'support/credentials'
 

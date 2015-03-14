@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   # @attr [Integer]   id                    The programItem's identifer from Zanox
   # @attr [String]    name                  The name of the advertiser
   # @attr [Fixnum]    adrank                The adrank of the advertiser
@@ -28,7 +28,7 @@ module ZanoxRuby
       # Retrieves all programs dependent on search parameters.
       #
       # This can require multiple requests, as internally every page is pulled.
-      # The ZanoxRuby::Program.page function can be used to better control the requests made.
+      # The ZanoxPublisher::Program.page function can be used to better control the requests made.
       #
       # @param query [String] Limits results to programs associated with this search string (API equivalent is q).
       # @param q [String] Limits results to programs associated with this search string (API name).
@@ -63,7 +63,6 @@ module ZanoxRuby
       # @param page [Integer] the page position
       # @param per_page [Integer] number of items in the result set (API equivalent is items)
       # @param items [Integer] number of items in the result set (API name)
-      #
       # @param query [String] Limits results to programs associated with this search string (API equivalent is q).
       # @param q [String] Limits results to programs associated with this search string (API name).
       # @param start_date [Date] Limits results to programs activated after this date (API equivalent is startdate).

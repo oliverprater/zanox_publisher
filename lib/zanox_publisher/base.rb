@@ -1,4 +1,4 @@
-module ZanoxRuby
+module ZanoxPublisher
   class Base
     # Pagination
     @@default_per_page = 10
@@ -19,8 +19,8 @@ module ZanoxRuby
       # @return [Integer]
       #
       # @example
-      #         ZanoxRuby::AdSpace.per_page = 20     #=> 20
-      #         first_page = ZanoxRuby::AdSpace.page #=> [Array<AdSpace>]
+      #         ZanoxPublisher::AdSpace.per_page = 20     #=> 20
+      #         first_page = ZanoxPublisher::AdSpace.page #=> [Array<AdSpace>]
       def per_page=(number)
         if number.to_i < 0
           @per_page = 0
@@ -58,9 +58,9 @@ module ZanoxRuby
       #         data = []
       #         number = 0
       #         do
-      #           data << ZanoxRuby::AdSpace.page(number)
+      #           data << ZanoxPublisher::AdSpace.page(number)
       #           number += 1
-      #         end while data.size < ZanoxRuby::AdSpace.total
+      #         end while data.size < ZanoxPublisher::AdSpace.total
       def total
         @total
       end
