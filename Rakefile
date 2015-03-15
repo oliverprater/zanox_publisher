@@ -6,5 +6,5 @@ require "bundler/gem_tasks"
 # => rake console
 #
 task :console do
-  exec "irb -r zanox_ruby -I ./lib"
+  exec "irb -r zanox_publisher -I ./lib"
 end

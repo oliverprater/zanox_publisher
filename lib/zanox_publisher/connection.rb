@@ -65,7 +65,7 @@ module ZanoxPublisher
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
     #           connection.get('/profiles') #=> #<HTTParty::Response ...>
     #
-    def initialize(relative_path = '', connect_id = ZanoxPublisher.connect_id, secret_key = ZanoxRuby.secret_key)
+    def initialize(relative_path = '', connect_id = ZanoxPublisher.connect_id, secret_key = ZanoxPublisher.secret_key)
       @connect_id, @secret_key = connect_id, secret_key
       @relative_path = relative_path
       @connection = self.class

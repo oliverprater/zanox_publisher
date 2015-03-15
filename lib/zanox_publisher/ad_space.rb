@@ -115,17 +115,23 @@ module ZanoxPublisher
     #
     def initialize(data = {})
       @id             = data.fetch('@id').to_i
-      @name           = data.fetch('name')
-      @url            = data.fetch('url')
-      @description    = data.fetch('description')
-      @adspace_type   = data.fetch('adspaceType')
-      @visitors       = data.fetch('visitors')
-      @impressions    = data.fetch('impressions')
-      @scope          = data.fetch('scope', nil)
-      @regions        = data.fetch('regions', nil)
-      @categories     = Category.fetch(data['categories'])
-      @language       = data.fetch('language')
-      @check_number   = data.fetch('checkNumber')
+
+      # Depending on short or long representation of object
+      if data.fetch('$', nil).nil?
+        @name           = data.fetch('name')
+        @url            = data.fetch('url')
+        @description    = data.fetch('description')
+        @adspace_type   = data.fetch('adspaceType')
+        @visitors       = data.fetch('visitors')
+        @impressions    = data.fetch('impressions')
+        @scope          = data.fetch('scope', nil)
+        @regions        = data.fetch('regions', nil)
+        @categories     = Category.fetch(data['categories'])
+        @language       = data.fetch('language')
+        @check_number   = data.fetch('checkNumber')
+      else
+        @name                 = data.fetch('$')
+      end
     end
 
     # Returns the adspaceItems' ID as integer representation

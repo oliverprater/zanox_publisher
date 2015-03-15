@@ -11,6 +11,7 @@ module ZanoxPublisher
   autoload :AdMedium,           'zanox_publisher/ad_medium'
   autoload :Product,            'zanox_publisher/product'
   autoload :Program,            'zanox_publisher/program'
+  autoload :ProgramApplication, 'zanox_publisher/program_application'
   autoload :Incentive,          'zanox_publisher/incentive'
 
   class << self

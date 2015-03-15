@@ -151,6 +151,18 @@ describe ZanoxPublisher::Program do
     it { expect(find.adrank).to be == first.adrank }
     it { expect(find.application_required).to be == first.application_required }
     it { expect(find.description).to be == first.description }
+
+    context 'with Program parameter' do
+      subject(:find) { ZanoxPublisher::Program.find(first) }
+
+      it { is_expected.to be_kind_of ZanoxPublisher::Program }
+
+      it { expect(find.id).to be == first.id }
+      it { expect(find.name).to be == first.name }
+      it { expect(find.adrank).to be == first.adrank }
+      it { expect(find.application_required).to be == first.application_required }
+      it { expect(find.description).to be == first.description }
+    end
   end
 
   describe '::categories', :vcr do

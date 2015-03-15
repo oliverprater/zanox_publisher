@@ -13,8 +13,14 @@ describe ZanoxPublisher::Product do
   let(:region) { 'DE' }
   let(:minimum_price) { 10 }
   let(:maximum_price) { 50 }
-  let(:programs) { ZanoxPublisher::Program.page }
-  let(:program) { ZanoxPublisher::Program.page.first }
+  let(:programs) do
+    confirmed = ZanoxPublisher::ProgramApplication.page(0, status: 'confirmed').map(&:program)
+    confirmed.map { |program| ZanoxPublisher::Program.find(program) }
+  end
+  let(:program) do
+    confirmed = ZanoxPublisher::ProgramApplication.page(0, status: 'confirmed').first.program
+    ZanoxPublisher::Program.find(confirmed)
+  end
   let(:program_not_confirmed) { ZanoxPublisher::Program.page.first }
   let(:adspace) { ZanoxPublisher::AdSpace.page.first }
   let(:ean) { ZanoxPublisher::Product.page.first.ean }
@@ -102,19 +108,21 @@ describe ZanoxPublisher::Product do
     end
 
     context 'with one progam' do
-      skip 'need program applications to get confirmed list'
       subject(:products) { ZanoxPublisher::Product.page(0, { programs: program }) }
 
       it { expect(products.all? { |product| product.program.id == program.id }).to be true}
     end
 
     context 'with multiple programs' do
-      skip 'need program applications to get confirmed list'
+      subject(:products) { ZanoxPublisher::Product.page(0, { programs: programs }) }
+      let(:program_ids) { programs.map(&:id) }
+
+      it { expect(products.all? { |product| program_ids.include? product.program.id }).to be true}
     end
 
     context 'with not confirmed program' do
-      skip 'need program application to exclude confirmed programs'
       subject(:products) { ZanoxPublisher::Product.page(0, { programs: program_not_confirmed })}
+
       it { expect{subject}.to raise_error(ZanoxPublisher::Unauthorized)}
     end
 

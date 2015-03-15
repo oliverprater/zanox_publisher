@@ -124,11 +124,11 @@ module ZanoxPublisher
       #
       # Authentication: Requires connect ID.
       #
-      # @param id [Integer] the ID of the program you want to get.
+      # @param id [Program, Integer] the ID of the program you want to get.
       #
       # @return [<Program>]
       def find(id)
-        response = self.connection.get(RESOURCE_PATH + "/program/#{id}")
+        response = self.connection.get(RESOURCE_PATH + "/program/#{id.to_i}")
         progam = response.fetch('programItem', []).first
 
         Program.new(progam)
