@@ -1,13 +1,17 @@
 module ZanoxPublisher
+  # Program Applications
+  #
+  # Apply to advertiser programs, get your applications, end partnerships.
+  #
   # @attr [Integer]   id                  The programApplicationItems's identifer from Zanox
-  # @attr [Program]   program             The
-  # @attr [AdSpace]   adspace             The
-  # @attr [String]    status              The
-  # @attr [DateTime]  create_date         The
-  # @attr [Boolean]   allow_tpv           The
-  # @attr [DateTime]  approved_date       The
-  # @attr [String]    publisher_comment   The
-  # @attr [String]    advertiser_comment  The
+  # @attr [Program]   program             The program for which the application is made
+  # @attr [AdSpace]   adspace             The ad space for which the application is made
+  # @attr [String]    status              The status of the application
+  # @attr [DateTime]  created_at          The date on which the application was created at
+  # @attr [Boolean]   allow_tpv           States if the application allows for tpv tracking links
+  # @attr [DateTime]  approved_date       The date on which the application was approved
+  # @attr [String]    publisher_comment   The publishers' comment on the application
+  # @attr [String]    advertiser_comment  The advertisers' comment on the application
   class ProgramApplication < Base
     RESOURCE_PATH = '/programapplications'
 
@@ -18,6 +22,11 @@ module ZanoxPublisher
       #
       # NOTE: Program applications are still returned even after the advertiser program has been paused discontinued.
       # The attribute "active" in the "program" element, indicates whether the program is still active.
+      #
+      # This is equivalent to the Zanox API method GetProgramApplications.
+      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-programapplications}.
+      #
+      # Authentication: Requires signature.
       #
       # This can require multiple requests, as internally every page is pulled.
       # The ZanoxPublisher::ProgramApplication.page function can be used to better control the requests made.
@@ -99,10 +108,6 @@ module ZanoxPublisher
       end
     end
 
-    # Program Applications
-    #
-    # Apply to advertiser programs, get your applications, end partnerships.
-    #
     # TODO: {https://developer.zanox.com/web/guest/publisher-api-2011/post-programapplications-program-adspace}
     # TODO: {https://developer.zanox.com/web/guest/publisher-api-2011/delete-programapplications-program-adspace}
     def initialize(data = {})
@@ -110,18 +115,18 @@ module ZanoxPublisher
       @program            = Program.new(data.fetch('program'))
       @adspace            = AdSpace.new(data.fetch('adspace'))
       @status             = data.fetch('status')
-      @create_date        = data.fetch('createDate')
+      @created_at         = data.fetch('createDate')
       @allow_tpv          = data.fetch('allowTpv')
       @approved_date      = data.fetch('approvedDate', nil)
       @publisher_comment  = data.fetch('publisherComment', nil)
       @advertiser_comment = data.fetch('advertiserComment', nil)
     end
 
-    attr_accessor :id, :program, :adspace, :status, :create_date, :allow_tpv,
+    attr_accessor :id, :program, :adspace, :status, :created_at, :allow_tpv,
                   :approved_date, :publisher_comment, :advertiser_comment
 
     # make API names available
-    alias createDate create_date
+    alias createDate created_at
     alias allowTpv allow_tpv
     alias approvedDate approved_date
     alias publisherComment publisher_comment

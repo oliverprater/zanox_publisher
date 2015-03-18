@@ -75,7 +75,7 @@ describe ZanoxPublisher::Product do
         programs = []
 
         products.each do |product|
-          program = ZanoxPublisher::Program.find(product.program.id)
+          program = ZanoxPublisher::Program.find(product.program)
           programs << program
         end
 
@@ -203,7 +203,7 @@ describe ZanoxPublisher::Product do
       ZanoxPublisher::Product.page.first
     end
 
-    subject(:find) { ZanoxPublisher::Product.find(first.id) }
+    subject(:find) { ZanoxPublisher::Product.find(first) }
 
     it { is_expected.to be_kind_of ZanoxPublisher::Product }
 
@@ -215,7 +215,7 @@ describe ZanoxPublisher::Product do
 
     # Seems to be implementation error in Zanox API
     context 'with adspace' do
-      subject(:find) { ZanoxPublisher::Product.find(first.id, adspace: adspace)}
+      subject(:find) { ZanoxPublisher::Product.find(first, adspace: adspace)}
 
       it { expect(find.tracking_links.first.adspace). to be == adspace.id }
     end

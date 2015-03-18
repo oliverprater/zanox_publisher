@@ -6,186 +6,107 @@ describe ZanoxPublisher::Incentive do
 
   let(:program) { ZanoxPublisher::Program.page.first }
   let(:adspace) { ZanoxPublisher::AdSpace.page.first }
-  let(:incentive_type) { ZanoxPublisher::Incentive.const_get(:INCENTIVETYPEENUM ).first }
+  let(:incentive_type) { ZanoxPublisher::Incentive::incentive_types.first }
   let(:region) { 'DE' }
   let(:incentives_total) do
     ZanoxPublisher::Incentive.page
     ZanoxPublisher::Incentive.total
   end
-  let(:exclusive_incentives_total) do
-    ZanoxPublisher::Incentive.page(0, true)
-    ZanoxPublisher::Incentive.total
-  end
 
   describe '::page', :vcr do
-    context 'with non-exclusive incentives' do
-      subject(:incentives) { ZanoxPublisher::Incentive.page }
+    subject(:incentives) { ZanoxPublisher::Incentive.page }
+
+    it { is_expected.to be_kind_of Array }
+    it { expect(incentives.first).to be_kind_of ZanoxPublisher::Incentive }
+
+    it { expect(incentives.count).to be >= 0 }
+    it 'to set the Incentive total count' do
+      ZanoxPublisher::Incentive.total = nil
+      incentives
+      expect(ZanoxPublisher::Incentive.total).to be >= 0
+    end
+    it { expect(incentives.all? { |incentive| incentive.exclusive == false}).to be true}
+
+    context 'page size is one' do
+      subject(:incentive) { ZanoxPublisher::Incentive.page(0, per_page: 1) }
 
       it { is_expected.to be_kind_of Array }
-      it { expect(incentives.first).to be_kind_of ZanoxPublisher::Incentive }
+      it { expect(incentive.first).to be_kind_of ZanoxPublisher::Incentive }
+      it { expect(incentive.count).to be == 1 }
+    end
 
-      it { expect(incentives.count).to be > 0 }
-      it 'to set the Incentive total count' do
-        ZanoxPublisher::Incentive.total = nil
-        incentives
-        expect(ZanoxPublisher::Incentive.total).to be > 0
-      end
-      it { expect(incentives.all? { |incentive| incentive.exclusive == false}).to be true}
+    context 'with progam' do
+      subject(:incentives) { ZanoxPublisher::Incentive.page(0, program: program) }
 
-      context 'with progam' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, program: program) }
+      it { expect(incentives.all? { |incentive| incentive.program.id == program.id }).to be true }
+    end
 
-        it { expect(incentives.all? { |incentive| incentive.program.id == program.id }).to be true }
-      end
+    context 'with adspace' do
+      subject(:incentives) { ZanoxPublisher::Incentive.page(0, adspace: adspace) }
 
-      context 'with adspace' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, adspace: adspace) }
-
-        it 'incentives have tracking link associated with this AdSpace' do
-          admedia = incentives.map { |incentive| incentive.admedia }
-          expect(admedia.all? { |admedium| admedium.tracking_links.first.adspace == adspace.id}).to be true
-        end
-      end
-
-      context 'with incentive_type' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, incentive_type: incentive_type ) }
-
-        it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
-      end
-
-      context 'with incentiveType' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, incentiveType: incentive_type ) }
-
-        it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
-      end
-
-      context 'with region' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, false, region: region) }
-
-        it 'limits results to programs from a particular region' do
-          programs = []
-
-          incentives.each do |incentive|
-            program = ZanoxPublisher::Program.find(incentive.program.id)
-            programs << program
-          end
-
-          expect(programs.all? { |program| program.regions.include? region }).to be true
-        end
+      it 'incentives have tracking link associated with this AdSpace' do
+        admedia = incentives.map { |incentive| incentive.admedia }
+        expect(admedia.all? { |admedium| admedium.tracking_links.first.adspace == adspace.id}).to be true
       end
     end
 
-    context 'with exclusive incentives' do
-      subject(:incentives) { ZanoxPublisher::Incentive.page(0, true) }
+    context 'with incentive_type' do
+      subject(:incentives) { ZanoxPublisher::Incentive.page(0, incentive_type: incentive_type ) }
 
-      it { is_expected.to be_kind_of Array }
-      it { expect(incentives.first).to be_kind_of ZanoxPublisher::Incentive }
-
-      it { expect(incentives.count).to be > 0 }
-      it 'to set the Incentive total count' do
-        ZanoxPublisher::Incentive.total = nil
-        incentives
-        expect(ZanoxPublisher::Incentive.total).to be > 0
-      end
-      it { expect(incentives.all? { |incentive| incentive.exclusive == true}).to be true}
-
-      context 'with progam' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, program: program) }
-
-        it { expect(incentives.all? { |incentive| incentive.program.id == program.id }).to be true }
-      end
-
-      context 'with adspace' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, adspace: adspace) }
-
-        it 'incentives have tracking link associated with this AdSpace' do
-          admedia = incentives.map { |incentive| incentive.admedia }
-          expect(admedia.all? { |admedium| admedium.tracking_links.first.adspace == adspace.id}).to be true
-        end
-      end
-
-      context 'with incentive_type' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, incentive_type: incentive_type ) }
-
-        it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
-      end
-
-      context 'with incentiveType' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, incentiveType: incentive_type ) }
-
-        it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
-      end
-
-      context 'with region' do
-        subject(:incentives) { ZanoxPublisher::Incentive.page(0, true, region: region) }
-
-        it 'limits results to programs from a particular region' do
-          programs = []
-
-          incentives.each do |incentive|
-            program = ZanoxPublisher::Program.find(incentive.program.id)
-            programs << program
-          end
-
-          expect(programs.all? { |program| program.regions.include? region }).to be true
-        end
-      end
+      it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
     end
 
-    describe '::all', :vcr do
-      subject(:incentives) { ZanoxPublisher::Incentive.all region: region, incentive_type: incentive_type }
+    context 'with incentiveType' do
+      subject(:incentives) { ZanoxPublisher::Incentive.page(0, incentiveType: incentive_type ) }
 
-      it { is_expected.to be_kind_of Array }
-      it { expect(incentives.first).to be_kind_of ZanoxPublisher::Incentive }
-
-      it { expect(incentives.count).to be == ZanoxPublisher::Incentive.total }
+      it { expect(incentives.all? { |incentive| incentive.incentive_type == incentive_type }).to be true }
     end
 
-    describe '::find', vcr: { record: :new_episodes } do
-      context 'with non-exclusive incentives' do
-        let(:first) do
-          ZanoxPublisher::Incentive.page(0, false, adspace: adspace).first
+    context 'with region' do
+      subject(:incentives) { ZanoxPublisher::Incentive.page(0, region: region) }
+
+      it 'limits results to programs from a particular region' do
+        programs = []
+
+        incentives.each do |incentive|
+          program = ZanoxPublisher::Program.find(incentive.program)
+          programs << program
         end
 
-        subject(:find) { ZanoxPublisher::Incentive.find(first.id) }
-
-        it { is_expected.to be_kind_of ZanoxPublisher::Incentive }
-
-        it { expect(find.id).to be == first.id }
-        it { expect(find.name).to be == first.name }
-        it { expect(find.incentive_type).to be == first.incentive_type }
-        it { expect(find.admedia.id).to be == first.admedia.id }
-        it { expect(find.program.id).to be == first.program.id }
-
-        # Seems to be implementation error in Zanox API
-        context 'with adspace' do
-          subject(:find) { ZanoxPublisher::Incentive.find(first.id, false, adspace: adspace)}
-
-          it { expect(find.admedia.tracking_links.first.adspace).to be == adspace.id }
-        end
+        expect(programs.all? { |program| program.regions.include? region }).to be true
       end
-      context 'with exclusive incentives' do
-        let(:first) do
-          ZanoxPublisher::Incentive.page(0, true, adspace: adspace).first
-        end
+    end
+  end
 
-        subject(:find) { ZanoxPublisher::Incentive.find(first.id, true) }
+  describe '::all', :vcr do
+    subject(:incentives) { ZanoxPublisher::Incentive.all region: region, incentive_type: incentive_type }
 
-        it { is_expected.to be_kind_of ZanoxPublisher::Incentive }
+    it { is_expected.to be_kind_of Array }
+    it { expect(incentives.first).to be_kind_of ZanoxPublisher::Incentive }
 
-        it { expect(find.id).to be == first.id }
-        it { expect(find.name).to be == first.name }
-        it { expect(find.incentive_type).to be == first.incentive_type }
-        it { expect(find.admedia.id).to be == first.admedia.id }
-        it { expect(find.program.id).to be == first.program.id }
+    it { expect(incentives.count).to be == ZanoxPublisher::Incentive.total }
+  end
 
-        # Seems to be implementation error in Zanox API
-        context 'with adspace' do
-          subject(:find) { ZanoxPublisher::Incentive.find(first.id, true, adspace: adspace)}
+  describe '::find', vcr: { record: :new_episodes } do
+    let(:first) do
+      ZanoxPublisher::Incentive.page(0, adspace: adspace).first
+    end
 
-          it { expect(find.admedia.tracking_links.first.adspace).to be == adspace.id }
-        end
-      end
+    subject(:find) { ZanoxPublisher::Incentive.find(first) }
+
+    it { is_expected.to be_kind_of ZanoxPublisher::Incentive }
+
+    it { expect(find.id).to be == first.id }
+    it { expect(find.name).to be == first.name }
+    it { expect(find.incentive_type).to be == first.incentive_type }
+    it { expect(find.admedia.id).to be == first.admedia.id }
+    it { expect(find.program.id).to be == first.program.id }
+
+    # Seems to be implementation error in Zanox API
+    context 'with adspace' do
+      subject(:find) { ZanoxPublisher::Incentive.find(first, adspace: adspace)}
+
+      it { expect(find.admedia.tracking_links.first.adspace).to be == adspace.id }
     end
   end
 end

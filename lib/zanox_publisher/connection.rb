@@ -31,6 +31,8 @@ module ZanoxPublisher
   # Raised for HTTP response code of 404
   class NotFound < ClientError; end
 
+  # Raw connection to the Zanox API
+  #
   # @attr [String] relative_path    The default relative path used for a request
   class Connection
     include HTTParty
@@ -52,7 +54,6 @@ module ZanoxPublisher
     # The connect ID and secret key can be passed as parameters,
     # else the ZanoxPublisher::authenticate information is taken.
     #
-    #
     # @param relative_path [String] The default relative path of the resource
     # @param connect_id [String] The connect ID of your account for authentication
     # @param secret_key [String] The secret key of your account for authentication
@@ -63,7 +64,7 @@ module ZanoxPublisher
     #
     # @example
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
-    #           connection.get('/profiles') #=> #<HTTParty::Response ...>
+    #           connection.get('/profiles') #=> #<Hash::Response ...>
     #
     def initialize(relative_path = '', connect_id = ZanoxPublisher.connect_id, secret_key = ZanoxPublisher.secret_key)
       @connect_id, @secret_key = connect_id, secret_key
@@ -82,7 +83,7 @@ module ZanoxPublisher
     #
     # @example
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
-    #           connection.get('/path') #=> #<HTTParty::Response ...>
+    #           connection.get('/path') #=> #<Hash::Response ...>
     def get(relative_path = @relative_path, params = {})
       handle_response connection.get(relative_path, public_auth(params))
     end
@@ -98,7 +99,7 @@ module ZanoxPublisher
     #
     # @example
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
-    #           connection.post('/path') #=> #<HTTParty::Response ...>
+    #           connection.post('/path') #=> #<Hash::Response ...>
     def post(relative_path = @relative_path, params = {})
       handle_response connection.post(relative_path, public_auth(params))
     end
@@ -114,7 +115,7 @@ module ZanoxPublisher
     #
     # @example
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
-    #           connection.put('/path') #=> #<HTTParty::Response ...>
+    #           connection.put('/path') #=> #<Hash::Response ...>
     def put(relative_path = @relative_path, params = {})
       handle_response connection.put(relative_path, public_auth(params))
     end
@@ -130,7 +131,7 @@ module ZanoxPublisher
     #
     # @example
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
-    #           connection.delete('/path') #=> #<HTTParty::Response ...>
+    #           connection.delete('/path') #=> #<Hash::Response ...>
     def delete(relative_path = @relative_path, params = {})
       handle_response connection.delete(relative_path, public_auth(params))
     end
@@ -146,7 +147,7 @@ module ZanoxPublisher
     #
     # @example
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
-    #           connection.signature_get('/path') #=> #<HTTParty::Response ...>
+    #           connection.signature_get('/path') #=> #<Hash::Response ...>
     def signature_get(relative_path = @relative_path, params = {})
       handle_response connection.get(relative_path, private_auth('GET', relative_path, params))
     end
@@ -162,7 +163,7 @@ module ZanoxPublisher
     #
     # @example
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
-    #           connection.signature_post('/path') #=> #<HTTParty::Response ...>
+    #           connection.signature_post('/path') #=> #<Hash::Response ...>
     def signature_post(relative_path = @relative_path, params = {})
       handle_response connection.post(relative_path, private_auth('POST', relative_path, params))
     end
@@ -178,7 +179,7 @@ module ZanoxPublisher
     #
     # @example
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
-    #           connection.signature_put('/path') #=> #<HTTParty::Response ...>
+    #           connection.signature_put('/path') #=> #<Hash::Response ...>
     def signature_put(relative_path = @relative_path, params = {})
       handle_response connection.put(relative_path, private_auth('PUT', relative_path, params))
     end
@@ -194,7 +195,7 @@ module ZanoxPublisher
     #
     # @example
     #           connection = ZanoxPublisher::Connection.new #=> #<Connection ...>
-    #           connection.signature_delete('/path') #=> #<HTTParty::Response ...>
+    #           connection.signature_delete('/path') #=> #<Hash::Response ...>
     def signature_delete(relative_path = @relative_path, params = {})
       handle_response connection.delete(relative_path, private_auth('DELETE', relative_path, params))
     end

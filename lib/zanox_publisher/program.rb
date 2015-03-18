@@ -1,24 +1,28 @@
 module ZanoxPublisher
-  # @attr [Integer]   id                    The programItem's identifer from Zanox
-  # @attr [String]    name                  The name of the advertiser
-  # @attr [Fixnum]    adrank                The adrank of the advertiser
-  # @attr [Boolean]   application_required  States whether a direct application is required
-  # @attr [String]    description           The description from the advertiser
-  # @attr [String]    description_local     The description from the advertiser in connect ID language
-  # @attr [Integer]   products              The number of products from the advertiser
-  # @attr [Hash?]     vertical              The vertical of the advertiser
-  # @attr [Array]     regions               The regions the advertiser is active in
-  # @attr [Array]     categories            The categories of the advertiser
-  # @attr [DateTime]  start_date            The start date of the program
-  # @attr [String]    url                   The url for the program
-  # @attr [String]    image                 The image for the program
-  # @attr [String]    currency              The currency of the program
-  # @attr [String]    status                The status of the program, with active stating the program is still a live
-  # @attr [String]    terms                 The terms of the program
-  # @attr [String]    terms_url             The terms url
-  # @attr [Array]     policies              The policies of the program
-  # @attr [String]    return_time_leads     The return time in which a lead is given
-  # @attr [String]    return_time_sales     The return time in which a sale is given
+  # Programs
+  #
+  # Get advertiser programs
+  #
+  # @attr [Integer]         id                    The programItem's identifer from Zanox
+  # @attr [String]          name                  The name of the advertiser
+  # @attr [Fixnum]          adrank                The adrank of the advertiser
+  # @attr [Boolean]         application_required  States whether a direct application is required
+  # @attr [String]          description           The description from the advertiser
+  # @attr [String]          description_local     The description from the advertiser in connect ID language
+  # @attr [Integer]         products              The number of products from the advertiser
+  # @attr [Vertical]        vertical              The vertical of the advertiser
+  # @attr [Array<String>]   regions               The regions the advertiser is active in
+  # @attr [Array<Category>] categories            The categories of the advertiser
+  # @attr [DateTime]        start_date            The start date of the program
+  # @attr [String]          url                   The url for the program
+  # @attr [String]          image                 The image for the program
+  # @attr [String]          currency              The currency of the program
+  # @attr [String]          status                The status of the program, with active stating the program is still a live
+  # @attr [String]          terms                 The terms of the program
+  # @attr [String]          terms_url             The terms url
+  # @attr [Array<Policy>]   policies              The policies to follow for the program
+  # @attr [String]          return_time_leads     The return time in which a lead is given
+  # @attr [String]          return_time_sales     The return time in which a sale is given
   class Program < Base
     RESOURCE_PATH = '/programs'
 
@@ -26,6 +30,11 @@ module ZanoxPublisher
 
     class << self
       # Retrieves all programs dependent on search parameters.
+      #
+      # This is equivalent to the Zanox API method SearchPrograms.
+      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-programs}.
+      #
+      # Authentication: Requires connect ID.
       #
       # This can require multiple requests, as internally every page is pulled.
       # The ZanoxPublisher::Program.page function can be used to better control the requests made.
@@ -139,12 +148,11 @@ module ZanoxPublisher
       # This is equivalent to the Zanox API method GetProgramCategories.
       # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-programs-categories}.
       #
-      # # UNSURE IF BOTH CATEGORY OBJECTS DESCRIBE SAME THING WHEN ID IS SAME ???
-      # NOTE: ONCE IT STATES admediaCategories AND OTHER JUST Category (FOR PROGRAM)
+      # NOTE: These categories are different than ZanoxPublisher::Product::categories
       #
       # Authentication: Requires connect ID.
       #
-      # @return [<Category>]
+      # @return [Array<Category>]
       def categories
         response = self.connection.get(RESOURCE_PATH + '/categories')
         Category.fetch(response['categories'])
@@ -169,17 +177,13 @@ module ZanoxPublisher
     #
     # Authentication: Requires connect ID.
     #
-    # @return [<Category>]
+    # @return [Array<Category>]
     def admedia_categories
       response = Program.connection.get("/admedia/categories/program/#{@id}")
 
       Category.fetch(response['categories'])
     end
 
-    # Programs
-    #
-    # Get advertiser programs
-    #
     def initialize(data = {})
       @id                   = data.fetch('@id').to_i
 
@@ -192,6 +196,7 @@ module ZanoxPublisher
         @description_local    = data.fetch('descriptionLocal', nil)
         @products             = data.fetch('products')
         @vertical             = data.fetch('vertical', nil)
+        @vertical             = Vertical.new(@vertical) unless @vertical.nil?
         @regions              = data.fetch('regions', []).first
         @regions              = @regions.fetch('region') unless @regions.nil?
         @regions              = [@regions] if @regions.is_a? String
@@ -204,7 +209,7 @@ module ZanoxPublisher
         @status               = data.fetch('status')
         @terms                = data.fetch('terms', nil)
         @terms_url            = data.fetch('termsUrl', nil)
-        @policies             = data.fetch('policies', nil)
+        @policies             = Policy.fetch(data['policies'])
         @return_time_leads    = data.fetch('returnTimeLeads', nil)
         @return_time_sales    = data.fetch('returnTimeSales', nil)
       else

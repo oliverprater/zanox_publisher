@@ -1,16 +1,20 @@
 module ZanoxPublisher
+  # AdSpaces
+  #
+  # Access and modify your AdSpace information
+  #
   # @attr [Integer]         id              The profileItem's identifer from Zanox
-  # @attr [String]          name            The name of your adspace
-  # @attr [String]          url             The url of your adspace
-  # @attr [String]          description     The description for your adspace
-  # @attr [String]          adspace_type    The type of adspace
-  # @attr [Integer]         visitors        The number of visitors to your adspace
-  # @attr [Integer]         impressions     The number of impressions of your adspace
-  # @attr [String]          scope           The scope of your adspace
-  # @attr [String]          regions         The regions of your adspace
-  # @attr [Array<Category>] categories      The categories of your adspace
-  # @attr [String]          language        The language of your adspace
-  # @attr [Integer]         check_number    The check number for this adspace
+  # @attr [String]          name            The name of your ad space
+  # @attr [String]          url             The url of your ad space
+  # @attr [String]          description     The description for your ad space
+  # @attr [String]          adspace_type    The type of ad space
+  # @attr [Integer]         visitors        The number of visitors to your ad space
+  # @attr [Integer]         impressions     The number of impressions of your ad space
+  # @attr [String]          scope           The scope of your ad space
+  # @attr [Array<String>]   regions         The regions for the ad space
+  # @attr [Array<Category>] categories      The categories of your ad space
+  # @attr [String]          language        The language of your ad space
+  # @attr [Integer]         check_number    The check number for this ad space
   class AdSpace < Base
     RESOURCE_PATH = '/adspaces'
 
@@ -19,6 +23,11 @@ module ZanoxPublisher
 
     class << self
       # Retrieves all adspace items related to the publisher account.
+      #
+      # This is equivalent to the Zanox API method GetAdspaces.
+      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-adspaces}.
+      #
+      # Authentication: Requires signature.
       #
       # This can require multiple requests, as internally every page is pulled.
       # The ZanoxPublisher::AdSpace.page function can be used to better control the requests made.
@@ -105,10 +114,6 @@ module ZanoxPublisher
       end
     end
 
-    # AdSpaces
-    #
-    # Access and modify your AdSpace information
-    #
     # TODO: POST   {https://developer.zanox.com/web/guest/publisher-api-2011/post-adspaces-adspace}
     # TODO: PUT    {https://developer.zanox.com/web/guest/publisher-api-2011/put-adspaces-adspace}
     # TODO: DELETE {https://developer.zanox.com/web/guest/publisher-api-2011/delete-adspaces-adspace}
@@ -125,7 +130,9 @@ module ZanoxPublisher
         @visitors       = data.fetch('visitors')
         @impressions    = data.fetch('impressions')
         @scope          = data.fetch('scope', nil)
-        @regions        = data.fetch('regions', nil)
+        @regions        = data.fetch('regions', []).first
+        @regions        = @regions.fetch('region') unless @regions.nil?
+        @regions        = [@regions] if @regions.is_a? String
         @categories     = Category.fetch(data['categories'])
         @language       = data.fetch('language')
         @check_number   = data.fetch('checkNumber')
@@ -142,8 +149,8 @@ module ZanoxPublisher
     end
 
     attr_accessor :id, :name, :url, :description, :adspace_type,
-                  :visitors, :impressions, :scope, :regions,
-                  :categories, :language, :check_number
+      :visitors, :impressions, :scope, :regions,
+      :categories, :language, :check_number
 
     # make API names available
     alias adspaceType adspace_type

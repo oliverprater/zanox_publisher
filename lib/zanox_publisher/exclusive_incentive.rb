@@ -1,20 +1,20 @@
 module ZanoxPublisher
-  # Incentives - Get coupons and other incentives
+  # Exclusive incentives - Get coupons and other incentives
   #
   # The Zanox API cannot retrieve both exclusive and non-exclusive incentives, so each has its own class.
-  class Incentive < IncentiveBase
-    RESOURCE_PATH = '/incentives'
+  class ExclusiveIncentive < IncentiveBase
+    RESOURCE_PATH = '/incentives/exclusive'
 
     # Set the exclusive attribute
-    @@exclusive = false
+    @@exclusive = true
 
     class << self
       # Retrieves all incentive's dependent on search parameters.
       #
-      # This is equivalent to the Zanox API method SearchIncentives.
-      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-incentives}.
+      # This is equivalent to the Zanox API method SearchExclusiveIncentives.
+      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-incentives-exclusive}.
       #
-      # Authentication: Requires connect ID.
+      # Authentication: Requires signature.
       #
       # This can require multiple requests, as internally every page is pulled.
       # The ZanoxPublisher::AdMedium.page function can be used to better control the requests made.
@@ -25,7 +25,7 @@ module ZanoxPublisher
       # @param incentiveType [String] limits results to one of the following incentive types (API name).
       # @param region [String] limits results to a region.
       #
-      # @return [Array<Incentive>]
+      # @return [Array<ExclusiveIncentive>]
       def all(options = {})
         retval = []
         current_page = 0
@@ -34,17 +34,17 @@ module ZanoxPublisher
         begin
           retval       += self.page(current_page, options)
           current_page += 1
-        end while Incentive.total > retval.size
+        end while ExclusiveIncentive.total > retval.size
 
         retval
       end
 
-      # Retrieves a list of publicly available, non-exclusive incentiveItems dependent on search parameter.
+      # Retrieves a list of exclusive incentiveItems dependent on search parameter.
       #
-      # This is equivalent to the Zanox API method SearchIncentives.
-      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-incentives}.
+      # This is equivalent to the Zanox API method SearchExclusiveIncentives.
+      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-incentives-exclusive}.
       #
-      # Authentication: Requires connect ID.
+      # Authentication: Requires signature.
       #
       # @param page [Integer] the page position.
       # @param per_page [Integer] number of items in the result set (API equivalent is items).
@@ -55,7 +55,7 @@ module ZanoxPublisher
       # @param incentiveType [String] limits results to one of the following incentive types (API name).
       # @param region [String] limits results to a region.
       #
-      # @return [Array<Incentive>]
+      # @return [Array<ExclusiveIncentive>]
       def page(page = 0, options = {})
         params = { query: { page: page } }
 
@@ -85,16 +85,16 @@ module ZanoxPublisher
 
         retval = []
 
-        response = self.connection.get(RESOURCE_PATH, params)
+        response = self.connection.signature_get(RESOURCE_PATH, params)
 
-        Incentive.total = response.fetch('total')
+        ExclusiveIncentive.total = response.fetch('total')
 
         incentives = []
-        incentives = response.fetch('incentiveItems', {}).fetch('incentiveItem', []) if Incentive.total > 0
+        incentives = response.fetch('incentiveItems', {}).fetch('incentiveItem', []) if ExclusiveIncentive.total > 0
         incentives = [incentives] unless incentives.is_a? Array
 
         incentives.each do |incentive|
-          retval << Incentive.new(incentive, @@exclusive)
+          retval << ExclusiveIncentive.new(incentive, @@exclusive)
         end
 
         retval
@@ -102,15 +102,15 @@ module ZanoxPublisher
 
       # Returns a single incentiveItem, as queried by its ID.
       #
-      # This is equivalent to the Zanox API method GetIncentive.
-      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-incentives-incentive}.
+      # This is equivalent to the Zanox API method GetExclusiveIncentive.
+      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-incentives-exclusive-incentive}.
       #
-      # Authentication: Requires connect ID.
+      # Authentication: Requires signature.
       #
       # @param id [Integer] the ID of the adspace you want to get.
       # @param adspace [AdSpace, Integer] if you would like tracking links for only one of your publisher ad spaces, pass its ID in this parameter.
       #
-      # @return [<Incentive>]
+      # @return [<ExclusiveIncentive>]
       def find(id, options = {})
         params  = {}
 
@@ -119,12 +119,12 @@ module ZanoxPublisher
 
         params  = { query: { adspace: adspace } } unless adspace.nil?
 
-        response = self.connection.get(RESOURCE_PATH + "/incentive/#{id.to_i}", params)
+        response = self.connection.signature_get(RESOURCE_PATH + "/incentive/#{id.to_i}", params)
 
-        Incentive.new(response.fetch('incentiveItem'), @@exclusive)
+        ExclusiveIncentive.new(response.fetch('incentiveItem'), @@exclusive)
       end
 
-      # A connection instance with Incentives' relative_path
+      # A connection instance with ExclusiveIncentives' relative_path
       #
       # @return [Connection]
       def connection

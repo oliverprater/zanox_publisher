@@ -32,6 +32,9 @@ module ZanoxPublisher
       @tpv     = data.fetch('tpv', nil)
     end
 
+    # Returns the adspaceItems' ID as integer representation
+    #
+    # @return [Integer]
     def to_i
       @adspace
     end

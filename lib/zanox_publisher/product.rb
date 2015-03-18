@@ -1,29 +1,38 @@
 module ZanoxPublisher
+  # Products
+  #
+  # Get products, including their tracking links
+  #
   # @attr [String]              id                    The productItem's identifer from Zanox
-  # @attr [String]              name                  The
-  # @attr [DateTime]            modified              The
-  # @attr [Program]             program               The
-  # @attr [Fixnum]              price                 The
-  # @attr [String]              currency              The
-  # @attr [Array<TrackingLink>] tracking_links        The
-  # @attr [String]              description           The
-  # @attr [String]              description_long      The
-  # @attr [String]              manufacturer          The
-  # @attr [String]              ean                   The
-  # @attr [String]              delivery_time         The
-  # @attr [String]              terms                 The
-  # @attr [Category]            category              The
-  # @attr [?]                   image                 The
-  # @attr [Fixnum]              price_old             The
-  # @attr [String]              shipping_costs        The
-  # @attr [String]              shipping              The
-  # @attr [String]              merchant_category     The
-  # @attr [String]              merchant_product_id   The
+  # @attr [String]              name                  The name for the product
+  # @attr [DateTime]            modified_at           The date the incentive is modified at
+  # @attr [Program]             program               The program to which the product belongs
+  # @attr [Fixnum]              price                 The price of the product
+  # @attr [String]              currency              The currency of the price
+  # @attr [Array<TrackingLink>] tracking_links        The tracking links of the product for each ad space
+  # @attr [String]              description           The product description
+  # @attr [String]              description_long      The long version of the product description
+  # @attr [String]              manufacturer          The products' manufacturer
+  # @attr [String]              ean                   The products' EAN
+  # @attr [String]              delivery_time         The delivery time for the product
+  # @attr [String]              terms                 The terms and conditions of the product
+  # @attr [Category]            category              The advertisers' given category to the product
+  # @attr [Hash]                image                 The product image's
+  # @attr [Fixnum]              price_old             The old price of the product
+  # @attr [String]              shipping_costs        The shipping costs for the product
+  # @attr [String]              shipping              The shipping costs for the product
+  # @attr [String]              merchant_category     The merchants' category for the product
+  # @attr [String]              merchant_product_id   The merchants' product ID
   class Product < Base
     RESOURCE_PATH = '/products'
 
     class << self
       # Retrieves all products dependent on search parameters.
+      #
+      # This is equivalent to the Zanox API method SearchProducts.
+      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-products}.
+      #
+      # Authentication: Requires connect ID.
       #
       # This can require multiple requests, as internally every page is pulled.
       # The ZanoxPublisher::Product.page function can be used to better control the requests made.
@@ -44,7 +53,7 @@ module ZanoxPublisher
       # @param merchant_category [String, Array<String>] Limits results to the specified merchant category/categories.
       # @param merchantcategory [String, Array<String>] Limits results to the specified merchant category/categories.
       #
-      # @return <Product>
+      # @return [Array<Product>]
       def all(options = {})
         retval = []
         current_page = 0
@@ -162,7 +171,9 @@ module ZanoxPublisher
         Product.total = response.fetch('total')
 
         products = []
-        products = response.fetch('productItems', {}).fetch('productItem', []) if Product.total > 0
+        products = response.fetch('productItems', {}) if Product.total > 0
+        products = {} unless products.is_a? Hash
+        products = products.fetch('productItem', [])
 
         products.each do |product|
           retval << Product.new(product)
@@ -190,23 +201,23 @@ module ZanoxPublisher
 
         params  = { query: { adspace: adspace } } unless adspace.nil?
 
-        response = self.connection.get(RESOURCE_PATH + "/product/#{id}", params)
+        response = self.connection.get(RESOURCE_PATH + "/product/#{id.to_i}", params)
 
         Product.new(response.fetch('productItem').first)
       end
 
+      # A connection instance with Products' relative_path
+      #
+      # @return [Connection]
       def connection
         @connection ||= Connection.new(RESOURCE_PATH)
       end
     end
 
-    # Products
-    #
-    # Get products, including their tracking links
     def initialize(data = {})
       @id                   = data.fetch('@id')
       @name                 = data.fetch('name')
-      @modified             = data.fetch('modified')
+      @modified_at          = data.fetch('modified')
       @program              = Program.new(data.fetch('program'))
       @price                = data.fetch('price')
       @currency             = data.fetch('currency')
@@ -227,16 +238,20 @@ module ZanoxPublisher
       @merchant_product_id  = data.fetch('merchantProductId', nil)
     end
 
+    # Returns the productItems' ID as integer representation
+    #
+    # @return [Integer]
     def to_i
       @id
     end
 
-    attr_accessor :id, :name, :modified, :program, :price, :currency, :tracking_links,
+    attr_accessor :id, :name, :modified_at, :program, :price, :currency, :tracking_links,
                   :description, :description_long, :manufacturer, :ean, :delivery_time,
                   :terms, :category, :image, :price_old, :shipping_costs, :shipping,
                   :merchant_category, :merchant_product_id
 
     # make API names available
+    alias modified modified_at
     alias trackingLinks tracking_links
     alias descriptionLong description_long
     alias deliveryTime delivery_time

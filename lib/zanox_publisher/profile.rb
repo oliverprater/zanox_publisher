@@ -1,4 +1,8 @@
 module ZanoxPublisher
+  # Profile information
+  #
+  # Get and update your profile information
+  #
   # @attr [Integer] id              The profileItem's identifer from Zanox
   # @attr [Fixnum]  adrank          The adrank
   # @attr [String]  first_name      The first name of the profile holder
@@ -70,10 +74,6 @@ module ZanoxPublisher
       end
     end
 
-    # Profile information
-    #
-    # Get and update your profile information
-    #
     # TODO: PUT {https://developer.zanox.com/web/guest/publisher-api-2011/put-profiles}
     #
     def initialize(data = {})

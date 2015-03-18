@@ -8,12 +8,12 @@ describe ZanoxPublisher::AdMedium do
   let(:category) { program.admedia_categories.first }
   let(:region) { 'DE' }
   let(:format) { 4 }
-  let(:type) { ZanoxPublisher::AdMedium.const_get(:ADMEDIA_TYPE_ENUM).first }
-  let(:purpose_supported) { ZanoxPublisher::AdMedium.const_get(:ADMEDIA_PURPOSE_ENUM)[1] }
-  let(:purpose_unsupported) { ZanoxPublisher::AdMedium.const_get(:ADMEDIA_PURPOSE_ENUM).last }
+  let(:type) { ZanoxPublisher::AdMedium.admedia_types.first }
+  let(:purpose_supported) { ZanoxPublisher::AdMedium.admedia_purposes[1] }
+  let(:purpose_unsupported) { ZanoxPublisher::AdMedium.admedia_purposes.last }
   let(:partnership_direct) { 'DIRECT' }
   let(:partnership_indirect) { 'INDIRECT' }
-  let(:adspace) { ZanoxPublisher::Profile.first }
+  let(:adspace) { ZanoxPublisher::AdSpace.page.first }
   let(:admedium_total) do
     ZanoxPublisher::AdMedium.page
     ZanoxPublisher::AdMedium.total
@@ -110,13 +110,12 @@ describe ZanoxPublisher::AdMedium do
       it { expect(admedia.all? { |admedium| admedium.category.id == category.id }).to be true }
     end
 
-    # Seems to be an implementation error on Zanox side
     context 'with adspace' do
-      let(:total) { ZanoxPublisher::AdMedium.page.count }
       subject(:admedia) { ZanoxPublisher::AdMedium.page(0, {adspace: adspace}) }
 
-      #it { expect(admedia.count).to be < total }
-      it { expect{ admedia }.to raise_error(ZanoxPublisher::ServerError) }
+      it 'incentives have tracking link associated with this AdSpace' do
+        expect(admedia.all? { |admedium| admedium.tracking_links.first.adspace == adspace.id}).to be true
+      end
     end
   end
 
@@ -144,11 +143,12 @@ describe ZanoxPublisher::AdMedium do
     it { expect(find.admedium_type).to be == first.admedium_type }
     it { expect(find.program.id).to be == first.program.id }
 
-    # Seems to be implementation error in Zanox API
     context 'with adspace' do
       subject(:find) { ZanoxPublisher::AdMedium.find(first.id, adspace: adspace)}
 
-      it { expect{ find }.to raise_error(ZanoxPublisher::ServerError) }
+      it 'ad medium has tracking link associated with this AdSpace' do
+        expect(find.tracking_links.first.adspace).to be == adspace.id
+      end
     end
   end
 

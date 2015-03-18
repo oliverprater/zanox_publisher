@@ -1,6 +1,6 @@
 module ZanoxPublisher
-  # Wrapper for the format response from Zanox API
-  class Format
+  # Wrapper for the vertical response from Zanox API
+  class Vertical
     attr_reader :id, :name
 
     def initialize(data = {})

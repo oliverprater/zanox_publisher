@@ -1,7 +1,9 @@
 module ZanoxPublisher
-  # Legacy name for category of program and admedium
+  # General category class
   #
-  # NOTE: ENSURE THAT include? WORKS WHEN GETTING STRING TO USE AN ARRAY<CATEGORY> TO VALIDATE
+  # Legacy name category is for program and admedium
+  #
+  # NOTE: Later create enumerable class Categories to allow .include? on result from API
   #
   # @param [Integer] id     The identifer of the category
   # @param [String]  name   The name of the category
@@ -45,6 +47,9 @@ module ZanoxPublisher
       @name
     end
 
+    # Returns the category ID as integer representation
+    #
+    # @return [Integer]
     def to_i
       @id
     end

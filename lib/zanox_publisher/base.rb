@@ -1,6 +1,6 @@
 module ZanoxPublisher
+  # Base class for resources with pagination
   class Base
-    # Pagination
     @@default_per_page = 10
     @@maximum_per_page = 50
 

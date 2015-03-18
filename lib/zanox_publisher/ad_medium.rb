@@ -1,30 +1,53 @@
 module ZanoxPublisher
-  # @attr [Integer]         id              The admediumItem's identifer from Zanox
-  # @attr [String]          name            The name for the admedium
-  # @attr [Fixnum]          adrank          The adrank of the admedium
-  # @attr [String]          admedium_type   The type of admedium
-  # @attr [Program]         program         The program to which the admedium belongs
-  # @attr [String]          title           The title of the admedium
-  # @attr [Integer]         height          The height of the image
-  # @attr [Integer]         width           The width of the image
-  # @attr [Hash]            format          The
-  # @attr [String]          code            The
-  # @attr [String]          description     The
-  # @attr [String]          instruction     The
-  # @attr [String]          purpose         The
-  # @attr [Array<Category>] category        The
-  # @attr [Hash]            group           The
-  # @attr [Array]           tags            The
-  # @attr [Array]           tracking_links  The
+  # AdMedium
+  #
+  # Get banners and links, including tracking links
+  #
+  # @attr [Integer]               id              The admediumItem's identifer from Zanox
+  # @attr [String]                name            The name for the ad medium
+  # @attr [Fixnum]                adrank          The adrank of the ad medium
+  # @attr [String]                admedium_type   The type of ad medium
+  # @attr [Program]               program         The program to which the ad medium belongs
+  # @attr [String]                title           The title of the ad medium
+  # @attr [Integer]               height          The height in pixel of the image
+  # @attr [Integer]               width           The width in pixel of the image
+  # @attr [Format]                format          The formats' Zanox identifer and name
+  # @attr [String]                code            The code of the ad medium
+  # @attr [String]                description     The description from the advertiser
+  # @attr [String]                instruction     The instructions from the advertiser
+  # @attr [String]                purpose         The purpose assigned to the ad medium
+  # @attr [Array<Category>]       category        The merchants' given category to the ad medium
+  # @attr [Hash]                  group           The group given to the ad medium
+  # @attr [Array]                 tags            A list of tags for the ad medium
+  # @attr [Array<TrackingLink>]   tracking_links  The tracking links of the ad medium for each ad space
   class AdMedium < Base
     RESOURCE_PATH = '/admedia'
 
     # ENUM types
-    ADMEDIA_TYPE_ENUM    = %w(html script lookatMedia image imageText text)
-    ADMEDIA_PURPOSE_ENUM = %w(startPage productDeeplink categoryDeeplink searchDeeplink)
+    @@admedia_types    = %w(html script lookatMedia image imageText text)
+    @@admedia_purposes = %w(startPage productDeeplink categoryDeeplink searchDeeplink)
 
     class << self
+      # Returns the Zanox API admediaTypeEnum datatype
+      #
+      # @return [Array<String>]
+      def admedia_types
+        @@admedia_types
+      end
+
+      # Returns the Zanox API admediaPurposeEnum datatype
+      #
+      # @return [Array<String>]
+      def admedia_purposes
+        @@admedia_purposes
+      end
+
       # Retrieves all affiliate link's dependent on search parameters.
+      #
+      # This is equivalent to the Zanox API method GetAdmedia.
+      # The method documentation can be found under {https://developer.zanox.com/web/guest/publisher-api-2011/get-admedia}.
+      #
+      # Authentication: Requires connect ID.
       #
       # This can require multiple requests, as internally every page is pulled.
       # The ZanoxPublisher::AdMedium.page function can be used to better control the requests made.
@@ -92,10 +115,10 @@ module ZanoxPublisher
 
         admedium_type = options[:admedium_type]
         admedium_type = options[:admediumtype]  if admedium_type.nil?
-        admedium_type = nil unless ADMEDIA_TYPE_ENUM.include? admedium_type
+        admedium_type = nil unless @@admedia_types.include? admedium_type
 
         purpose = options[:purpose]
-        purpose = nil unless ADMEDIA_PURPOSE_ENUM.include? purpose
+        purpose = nil unless @@admedia_purposes.include? purpose
 
         partnership = options[:partnership]
 
@@ -167,10 +190,6 @@ module ZanoxPublisher
       end
     end
 
-    # AdMedium
-    #
-    # Get banners and links, including tracking links
-    #
     def initialize(data = {})
       @id             = data.fetch('@id').to_i
       @name           = data.fetch('name')
@@ -194,14 +213,17 @@ module ZanoxPublisher
       @tracking_links = TrackingLink.fetch(data.fetch('trackingLinks', {})['trackingLink'])
     end
 
+    # Returns the admediumItems' ID as integer representation
+    #
+    # @return [Integer]
     def to_i
       @id
     end
 
     attr_accessor :id, :name, :adrank, :admedium_type, :program,
-                  :title, :height, :width, :format, :code,
-                  :description, :instruction, :purpose, :category,
-                  :group, :tags, :tracking_links
+      :title, :height, :width, :format, :code,
+      :description, :instruction, :purpose, :category,
+      :group, :tags, :tracking_links
 
     # make API names available
     alias admediumType admedium_type
