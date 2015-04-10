@@ -126,9 +126,12 @@ module ZanoxPublisher
 
         programs = options[:programs]
 
-        unless programs.nil?
-          programs = programs.map(&:to_i).join(',') if programs.is_a? Array
-          programs = programs.to_i                  if programs.is_a? Program or programs.is_a? Integer
+        if programs.is_a? Array
+          programs = programs.map(&:to_i).join(',')
+        elsif programs.is_a? Program or programs.is_a? Integer
+          programs = programs.to_i
+        else
+          programs = nil
         end
 
         has_images = options[:has_images]
@@ -246,9 +249,9 @@ module ZanoxPublisher
     end
 
     attr_accessor :id, :name, :modified_at, :program, :price, :currency, :tracking_links,
-                  :description, :description_long, :manufacturer, :ean, :delivery_time,
-                  :terms, :category, :image, :price_old, :shipping_costs, :shipping,
-                  :merchant_category, :merchant_product_id
+      :description, :description_long, :manufacturer, :ean, :delivery_time,
+      :terms, :category, :image, :price_old, :shipping_costs, :shipping,
+      :merchant_category, :merchant_product_id
 
     # make API names available
     alias modified modified_at
