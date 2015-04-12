@@ -167,7 +167,7 @@ module ZanoxPublisher
       # @param id [Integer] the ID of the adspace you want to get.
       # @param adspace [AdSpace, Integer] if you would like tracking links for only one of your publisher ad spaces, pass its ID in this parameter.
       #
-      # @return [<AdMedium>]
+      # @return [<AdMedium>, nil]
       def find(id, options = {})
         params  = {}
 

@@ -98,7 +98,7 @@ module ZanoxPublisher
       #
       # @param id [Integer] the ID of the adspace you want to get
       #
-      # @return [<AdSpace>]
+      # @return [<AdSpace>, nil]
       def find(id)
         response = self.connection.signature_get(RESOURCE_PATH + "/adspace/#{id}")
         adspace = response.fetch('adspaceItem', []).first

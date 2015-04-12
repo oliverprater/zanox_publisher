@@ -195,7 +195,7 @@ module ZanoxPublisher
       # @param id [Integer] the ID of the adspace you want to get.
       # @param adspace [AdSpace, Integer] if you would like tracking links for only one of your publisher ad spaces, pass its ID in this parameter.
       #
-      # @return [<Product>]
+      # @return [<Product>, nil]
       def find(id, options = {})
         params  = {}
 
@@ -205,8 +205,13 @@ module ZanoxPublisher
         params  = { query: { adspace: adspace } } unless adspace.nil?
 
         response = self.connection.get(RESOURCE_PATH + "/product/#{id.to_i}", params)
+        product = response.fetch('productItem').first
 
-        Product.new(response.fetch('productItem').first)
+        if product.empty?
+          return nil
+        end
+
+        Product.new(product)
       end
 
       # A connection instance with Products' relative_path
