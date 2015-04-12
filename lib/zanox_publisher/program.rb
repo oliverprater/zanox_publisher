@@ -140,7 +140,7 @@ module ZanoxPublisher
         response = self.connection.get(RESOURCE_PATH + "/program/#{id.to_i}")
         program = response.fetch('programItem', []).first
 
-        if program.empty?
+        if program.nil? or program.empty?
           return nil
         end
 

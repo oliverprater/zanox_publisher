@@ -103,7 +103,7 @@ module ZanoxPublisher
         response = self.connection.signature_get(RESOURCE_PATH + "/adspace/#{id}")
         adspace = response.fetch('adspaceItem', []).first
 
-        if adspace.empty?
+        if adspace.nil? or adspace.empty?
           return nil
         end
 

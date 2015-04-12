@@ -207,7 +207,7 @@ module ZanoxPublisher
         response = self.connection.get(RESOURCE_PATH + "/product/#{id.to_i}", params)
         product = response.fetch('productItem').first
 
-        if product.empty?
+        if product.nil? or product.empty?
           return nil
         end
 
