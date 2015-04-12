@@ -135,12 +135,16 @@ module ZanoxPublisher
       #
       # @param id [Program, Integer] the ID of the program you want to get.
       #
-      # @return [<Program>]
+      # @return [<Program>, nil]
       def find(id)
         response = self.connection.get(RESOURCE_PATH + "/program/#{id.to_i}")
-        progam = response.fetch('programItem', []).first
+        program = response.fetch('programItem', []).first
 
-        Program.new(progam)
+        if program.empty?
+          return nil
+        end
+
+        Program.new(program)
       end
 
       # Get all program categories, including names and IDs, associated to the connect ID.

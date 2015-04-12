@@ -179,6 +179,10 @@ module ZanoxPublisher
         response = self.connection.get(RESOURCE_PATH + "/admedium/#{id}", params)
         admedium = response.fetch('admediumItem', [])
 
+        if admedium.empty?
+          return nil
+        end
+
         AdMedium.new(admedium)
       end
 
