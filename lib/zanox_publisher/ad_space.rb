@@ -37,10 +37,19 @@ module ZanoxPublisher
         retval = []
         current_page = 0
 
-        begin
-          retval       += self.page(current_page, { per_page: maximum_per_page })
+        loop do
+          response      = self.page(current_page, { per_page: maximum_per_page })
+
+          # This break is required as some give 0 elements, but set total value
+          break if response.nil? or response.empty?
+
+          retval       += response
+
+          # This is the normal break when all pages have been processed
+          break unless AdSpace.total > retval.size
+
           current_page += 1
-        end while AdSpace.total > retval.size
+        end
 
         retval
       end

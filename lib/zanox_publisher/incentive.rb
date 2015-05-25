@@ -31,10 +31,19 @@ module ZanoxPublisher
         current_page = 0
         options.merge!({ per_page: maximum_per_page })
 
-        begin
-          retval       += self.page(current_page, options)
+        loop do
+          response      = self.page(current_page, options)
+
+          # This break is required as some give 0 elements, but set total value
+          break if response.nil? or response.empty?
+
+          retval       += response
+
+          # This is the normal break when all pages have been processed
+          break unless Incentive.total > retval.size
+
           current_page += 1
-        end while Incentive.total > retval.size
+        end
 
         retval
       end
